@@ -3,18 +3,18 @@ import Link from "next/link";
 export default function Home() {
   const matches = [
     {
-      league: "LIGUE 1",
+      league: "COUPE DU MONDE",
       date: "Aujourd'hui",
-      time: "21:00",
-      home: "PSG",
-      away: "MARSEILLE",
+      time: "19:00",
+      home: "Argentine",
+      away: "Autrice",
     },
     {
-      league: "PREMIER LEAGUE",
+      league: "COUPE DU MONDE",
       date: "Aujourd'hui",
-      time: "18:30",
-      home: "LIVERPOOL",
-      away: "ARSENAL",
+      time: "23:00",
+      home: "FRANCE",
+      away: "IRAK",
     },
     {
       league: "SERIE A",
