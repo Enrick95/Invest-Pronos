@@ -17,11 +17,11 @@ export default function Home() {
       away: "IRAK",
     },
     {
-      league: "SERIE A",
-      date: "Aujourd'hui",
-      time: "20:45",
-      home: "JUVENTUS",
-      away: "INTER",
+      league: "COUPE DU MONDE",
+      date: "DEMAIN",
+      time: "19:00",
+      home: "PORTUGAL",
+      away: "OUZBEKISTAN",
     },
   ];
 
