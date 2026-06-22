@@ -305,9 +305,7 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col gap-3 text-sm text-white/65">
-            <Link href="/espace-vip">
-              Pronostics
-            </Link>
+            
 
             <Link href="/vip">
               Offres VIP
