@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { addMatch, updateMatch, deleteMatch } from "./actions";
+import {
+  addMatch,
+  updateMatch,
+  deleteMatch,
+  addVipTicket,
+} from "./actions";
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -63,7 +68,36 @@ export default async function AdminPage() {
             Ajouter
           </button>
         </form>
+<div className="mt-12 rounded-[30px] border border-[#4f3814] bg-[#111111] p-6">
+  <h2 className="mb-6 text-3xl font-black">Tickets VIP</h2>
 
+  <form action={addVipTicket} className="grid gap-3">
+    <input name="title" placeholder="🛡️ Ticket Safe" className="input" required />
+    <input name="sport" placeholder="Football" className="input" required />
+    <input name="date" placeholder="Aujourd'hui" className="input" required />
+    <input name="pronostic" placeholder="Victoire Argentine" className="input" required />
+    <input name="cote" placeholder="1.60" className="input" required />
+    <input name="confiance" placeholder="Élevée" className="input" required />
+
+    <textarea
+      name="analyse"
+      placeholder="Analyse VIP"
+      className="input min-h-[120px]"
+      required
+    />
+
+    <input
+      name="image_url"
+      placeholder="URL image ticket"
+      className="input"
+      required
+    />
+
+    <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
+      Ajouter Ticket
+    </button>
+  </form>
+</div>
         <div className="mt-8 space-y-4">
           {(matches ?? []).map((match) => (
             <form

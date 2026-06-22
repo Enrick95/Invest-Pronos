@@ -62,3 +62,20 @@ export async function deleteMatch(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
 }
+export async function addVipTicket(formData: FormData) {
+  const supabase = await checkAdmin();
+
+  await supabase.from("vip_tickets").insert({
+    title: formData.get("title"),
+    sport: formData.get("sport"),
+    date: formData.get("date"),
+    pronostic: formData.get("pronostic"),
+    cote: formData.get("cote"),
+    confiance: formData.get("confiance"),
+    analyse: formData.get("analyse"),
+    image_url: formData.get("image_url"),
+  });
+
+  revalidatePath("/dashboard");
+  revalidatePath("/admin");
+}
