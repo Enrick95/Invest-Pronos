@@ -1,30 +1,15 @@
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Home() {
-  const matches = [
-    {
-      league: "COUPE DU MONDE",
-      date: "Aujourd'hui",
-      time: "19:00",
-      home: "Argentine",
-      away: "Autrice",
-    },
-    {
-      league: "COUPE DU MONDE",
-      date: "Aujourd'hui",
-      time: "23:00",
-      home: "FRANCE",
-      away: "IRAK",
-    },
-    {
-      league: "COUPE DU MONDE",
-      date: "DEMAIN",
-      time: "19:00",
-      home: "PORTUGAL",
-      away: "OUZBEKISTAN",
-    },
-  ];
+export default async function Home() {
+  const supabase = await createClient();
 
+  const { data } = await supabase
+    .from("home_matches")
+    .select("id, league, date, time, home, away")
+    .order("created_at", { ascending: true });
+
+  const matches = data ?? [];
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#050505] text-white">
       <header className="sticky top-0 z-50 border-b border-[#2f2415] bg-black/95 backdrop-blur-xl">
