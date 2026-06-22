@@ -245,8 +245,8 @@ export default async function Home() {
   <div className="mt-6 grid gap-3 sm:grid-cols-3 md:mt-10 md:gap-4">
     {[
       ["128+", "Membres VIP"],
-      ["426+", "Paris publiés"],
-      ["78%", "Taux de réussite"],
+      ["2+", "Paris publiés"],
+      ["100%", "Taux de réussite"],
     ].map(([value, label]) => (
       <div
         key={label}

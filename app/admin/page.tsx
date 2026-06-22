@@ -6,6 +6,8 @@ import {
   updateMatch,
   deleteMatch,
   addVipTicket,
+  deleteVipTicket,
+  updateVipTicket,
 } from "./actions";
 
 export default async function AdminPage() {
@@ -26,6 +28,13 @@ export default async function AdminPage() {
     .select("id, league, date, time, home, away, created_at")
     .order("created_at", { ascending: true });
 
+  const { data: vipTickets } = await supabase
+    .from("vip_tickets")
+    .select(
+      "id, title, sport, date, pronostic, cote, confiance, analyse, image_url, created_at"
+    )
+    .order("created_at", { ascending: false });
+console.log("VIP TICKETS =", vipTickets);
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-8 text-white md:px-8">
       <section className="mx-auto max-w-6xl">
@@ -58,8 +67,18 @@ export default async function AdminPage() {
           action={addMatch}
           className="mt-8 grid gap-3 rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:grid-cols-6"
         >
-          <input name="league" placeholder="Compétition" className="input" required />
-          <input name="date" placeholder="Aujourd'hui" className="input" required />
+          <input
+            name="league"
+            placeholder="Compétition"
+            className="input"
+            required
+          />
+          <input
+            name="date"
+            placeholder="Aujourd'hui"
+            className="input"
+            required
+          />
           <input name="time" placeholder="19:00" className="input" required />
           <input name="home" placeholder="Équipe 1" className="input" required />
           <input name="away" placeholder="Équipe 2" className="input" required />
@@ -68,36 +87,117 @@ export default async function AdminPage() {
             Ajouter
           </button>
         </form>
-<div className="mt-12 rounded-[30px] border border-[#4f3814] bg-[#111111] p-6">
-  <h2 className="mb-6 text-3xl font-black">Tickets VIP</h2>
 
-  <form action={addVipTicket} className="grid gap-3">
-    <input name="title" placeholder="🛡️ Ticket Safe" className="input" required />
-    <input name="sport" placeholder="Football" className="input" required />
-    <input name="date" placeholder="Aujourd'hui" className="input" required />
-    <input name="pronostic" placeholder="Victoire Argentine" className="input" required />
-    <input name="cote" placeholder="1.60" className="input" required />
-    <input name="confiance" placeholder="Élevée" className="input" required />
+        <div className="mt-12 rounded-[30px] border border-[#4f3814] bg-[#111111] p-6">
+          <h2 className="mb-6 text-3xl font-black">Tickets VIP</h2>
 
-    <textarea
-      name="analyse"
-      placeholder="Analyse VIP"
-      className="input min-h-[120px]"
-      required
-    />
+          <form
+  action={addVipTicket}
+  className="grid gap-3"
+>
+            <input
+              name="title"
+              placeholder="🛡️ Ticket Safe"
+              className="input"
+              required
+            />
+            <input
+              name="sport"
+              placeholder="Football"
+              className="input"
+              required
+            />
+            <input
+              name="date"
+              placeholder="Aujourd'hui"
+              className="input"
+              required
+            />
+            <input
+              name="pronostic"
+              placeholder="Victoire Argentine"
+              className="input"
+              required
+            />
+            <input
+              name="cote"
+              placeholder="1.60"
+              className="input"
+              required
+            />
+            <input
+              name="confiance"
+              placeholder="Élevée"
+              className="input"
+              required
+            />
 
-    <input
-      name="image_url"
-      placeholder="URL image ticket"
-      className="input"
-      required
-    />
+            <textarea
+              name="analyse"
+              placeholder="Analyse VIP"
+              className="input min-h-[120px]"
+              required
+            />
 
-    <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
-      Ajouter Ticket
-    </button>
+            <input
+  type="file"
+  name="image"
+  accept="image/*"
+  className="input"
+/>
+
+            <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
+              Ajouter Ticket
+            </button>
+          </form>
+
+          <div className="mt-8 space-y-4">
+            {(vipTickets ?? []).map((ticket) => (
+  <form
+    key={ticket.id}
+    action={updateVipTicket}
+    className="rounded-[24px] border border-[#2a2013] bg-black/30 p-5"
+  >
+    <input type="hidden" name="id" defaultValue={ticket.id} />
+
+    <div className="grid gap-3 md:grid-cols-2">
+      <input name="title" defaultValue={ticket.title} className="input" />
+      <input name="sport" defaultValue={ticket.sport} className="input" />
+      <input name="date" defaultValue={ticket.date} className="input" />
+      <input name="pronostic" defaultValue={ticket.pronostic} className="input" />
+      <input name="cote" defaultValue={ticket.cote} className="input" />
+      <input name="confiance" defaultValue={ticket.confiance} className="input" />
+
+      <input
+        name="image_url"
+        defaultValue={ticket.image_url}
+        className="input md:col-span-2"
+      />
+
+      <textarea
+        name="analyse"
+        defaultValue={ticket.analyse}
+        className="input min-h-[100px] md:col-span-2"
+      />
+    </div>
+
+    <div className="mt-4 flex gap-3">
+      <button className="rounded-xl border border-[#d4a64a] px-4 py-3 font-bold text-[#d4a64a]">
+        Modifier
+      </button>
+
+      <button
+        formAction={deleteVipTicket}
+        className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 font-bold text-red-400"
+      >
+        Supprimer
+      </button>
+    </div>
   </form>
-</div>
+))}
+          </div>
+        </div>
+
         <div className="mt-8 space-y-4">
           {(matches ?? []).map((match) => (
             <form
@@ -107,7 +207,11 @@ export default async function AdminPage() {
             >
               <input type="hidden" name="id" defaultValue={match.id} />
 
-              <input name="league" defaultValue={match.league} className="input" />
+              <input
+                name="league"
+                defaultValue={match.league}
+                className="input"
+              />
               <input name="date" defaultValue={match.date} className="input" />
               <input name="time" defaultValue={match.time} className="input" />
               <input name="home" defaultValue={match.home} className="input" />

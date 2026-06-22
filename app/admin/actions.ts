@@ -65,6 +65,27 @@ export async function deleteMatch(formData: FormData) {
 export async function addVipTicket(formData: FormData) {
   const supabase = await checkAdmin();
 
+  const imageFile = formData.get("image") as File;
+  let imageUrl = formData.get("image_url") as string;
+
+  if (imageFile && imageFile.size > 0) {
+    const fileName = `${Date.now()}-${imageFile.name}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("ticket-images")
+      .upload(fileName, imageFile);
+
+    if (uploadError) {
+      throw new Error(uploadError.message);
+    }
+
+    const { data } = supabase.storage
+      .from("ticket-images")
+      .getPublicUrl(fileName);
+
+    imageUrl = data.publicUrl;
+  }
+
   await supabase.from("vip_tickets").insert({
     title: formData.get("title"),
     sport: formData.get("sport"),
@@ -73,9 +94,44 @@ export async function addVipTicket(formData: FormData) {
     cote: formData.get("cote"),
     confiance: formData.get("confiance"),
     analyse: formData.get("analyse"),
-    image_url: formData.get("image_url"),
+    image_url: imageUrl,
   });
 
   revalidatePath("/dashboard");
   revalidatePath("/admin");
+}
+export async function deleteVipTicket(formData: FormData) {
+  const id = formData.get("id") as string;
+
+  const supabase = await checkAdmin();
+
+  await supabase
+    .from("vip_tickets")
+    .delete()
+    .eq("id", id);
+
+  revalidatePath("/admin");
+  revalidatePath("/dashboard");
+}
+export async function updateVipTicket(formData: FormData) {
+  const id = formData.get("id") as string;
+
+  const supabase = await checkAdmin();
+
+  await supabase
+    .from("vip_tickets")
+    .update({
+      title: formData.get("title"),
+      sport: formData.get("sport"),
+      date: formData.get("date"),
+      pronostic: formData.get("pronostic"),
+      cote: formData.get("cote"),
+      confiance: formData.get("confiance"),
+      analyse: formData.get("analyse"),
+      image_url: formData.get("image_url"),
+    })
+    .eq("id", id);
+
+  revalidatePath("/admin");
+  revalidatePath("/dashboard");
 }

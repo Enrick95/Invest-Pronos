@@ -1,43 +1,19 @@
 export default function ResultatsPage() {
   const resultats = [
     {
-      date: "15/07",
-      competition: "Ligue 1",
-      match: "PSG vs Marseille",
-      pronostic: "Victoire PSG",
-      cote: "1.85",
+      date: "Aujourd'hui",
+      competition: "International",
+      match: "Nouvelle-Zélande vs Égypte",
+      pronostic: "Passe décisive Mohamed Salah",
+      cote: "4.00",
       statut: "Gagné",
     },
     {
-      date: "14/07",
-      competition: "Premier League",
-      match: "Liverpool vs Arsenal",
-      pronostic: "Plus de 2.5 buts",
-      cote: "1.70",
-      statut: "Gagné",
-    },
-    {
-      date: "13/07",
-      competition: "Serie A",
-      match: "Juventus vs Inter",
-      pronostic: "Inter ou nul",
-      cote: "1.60",
-      statut: "Gagné",
-    },
-    {
-      date: "12/07",
-      competition: "Liga",
-      match: "Real Madrid vs Séville",
-      pronostic: "Real Madrid gagne",
-      cote: "1.55",
-      statut: "Perdu",
-    },
-    {
-      date: "11/07",
-      competition: "NBA",
-      match: "Lakers vs Celtics",
-      pronostic: "Lakers +4.5",
-      cote: "1.90",
+      date: "Aujourd'hui",
+      competition: "International",
+      match: "Nouvelle-Zélande vs Égypte",
+      pronostic: "Passe décisive Mostafa Ziko",
+      cote: "5.00",
       statut: "Gagné",
     },
   ];
@@ -69,28 +45,28 @@ export default function ResultatsPage() {
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               Taux de réussite
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">78%</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">100%</p>
           </div>
 
           <div className="rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:p-7">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               ROI moyen
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">+18%</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">0%</p>
           </div>
 
           <div className="rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:p-7">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               Paris publiés
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">426</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">2</p>
           </div>
 
           <div className="rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:p-7">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
-              Abonnés VIP
+              Pronostics gagnants
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">128</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">2</p>
           </div>
         </div>
 
@@ -126,7 +102,7 @@ export default function ResultatsPage() {
               <tbody>
                 {resultats.map((item) => (
                   <tr
-                    key={`${item.date}-${item.match}`}
+                    key={`${item.date}-${item.pronostic}`}
                     className="bg-[#151515]"
                   >
                     <td className="rounded-l-2xl px-4 py-5 text-sm text-white/60">
@@ -150,14 +126,8 @@ export default function ResultatsPage() {
                     </td>
 
                     <td className="rounded-r-2xl px-4 py-5">
-                      <span
-                        className={
-                          item.statut === "Gagné"
-                            ? "rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-bold text-green-400"
-                            : "rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-400"
-                        }
-                      >
-                        {item.statut === "Gagné" ? "✅ Gagné" : "❌ Perdu"}
+                      <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-bold text-green-400">
+                        ✅ Gagné
                       </span>
                     </td>
                   </tr>
