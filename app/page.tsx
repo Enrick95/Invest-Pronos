@@ -52,7 +52,6 @@ export default async function Home() {
               ["Accueil", "/"],
               ["Matchs", "#matchs-du-jour"],
               ["Résultats", "/resultats"],
-              ["Pronostics", "/espace-vip"],
               ["VIP", "/vip"],
             ].map(([label, href], index) =>
               href.startsWith("#") ? (
