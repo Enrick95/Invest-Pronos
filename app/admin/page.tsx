@@ -11,6 +11,9 @@ import {
   addResult,
 updateResult,
 deleteResult,
+addContestMatch,
+updateContestMatch,
+deleteContestMatch,
 } from "./actions";
 
 export default async function AdminPage() {
@@ -42,6 +45,12 @@ export default async function AdminPage() {
   .from("results")
   .select("*")
   .order("created_at", { ascending: false });
+
+  const { data: contestMatches } = await supabase
+  .from("contest_matches")
+  .select("*")
+  .order("created_at", { ascending: false });
+
 console.log("VIP TICKETS =", vipTickets);
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-8 text-white md:px-8">
@@ -344,6 +353,93 @@ console.log("VIP TICKETS =", vipTickets);
 
         <form action={deleteResult} className="mt-3">
           <input type="hidden" name="id" value={result.id} />
+          <button className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 font-black text-red-400">
+            Supprimer
+          </button>
+        </form>
+      </div>
+    ))}
+  </div>
+</div>
+<div className="mt-12 rounded-[30px] border border-[#4f3814] bg-[#111111] p-6">
+  <h2 className="mb-6 text-3xl font-black text-[#d4a64a]">
+    Challenge Coupe du Monde
+  </h2>
+
+  <form action={addContestMatch} className="grid gap-3">
+    <input name="date" placeholder="24/06" className="input" required />
+    <input name="time" placeholder="21:00" className="input" required />
+    <input name="team_a" placeholder="France" className="input" required />
+    <input name="team_b" placeholder="Brésil" className="input" required />
+    <input name="team_a_flag" placeholder="🇫🇷" className="input" required />
+    <input name="team_b_flag" placeholder="🇧🇷" className="input" required />
+
+    <select name="status" className="input" required>
+      <option value="Ouvert">Ouvert</option>
+      <option value="Fermé">Fermé</option>
+      <option value="Terminé">Terminé</option>
+    </select>
+
+    <select name="winner" className="input">
+  <option value="">Aucun gagnant pour l’instant</option>
+  <option value="team_a">Équipe A gagne</option>
+  <option value="draw">Match nul</option>
+  <option value="team_b">Équipe B gagne</option>
+</select>
+
+    <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
+      Ajouter match challenge
+    </button>
+  </form>
+
+  <div className="mt-8 space-y-4">
+    {contestMatches?.map((match) => (
+      <div
+        key={match.id}
+        className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
+      >
+        <form action={updateContestMatch} className="grid gap-3">
+          <input type="hidden" name="id" value={match.id} />
+
+          <input name="date" defaultValue={match.date} className="input" />
+          <input name="time" defaultValue={match.time} className="input" />
+          <input name="team_a" defaultValue={match.team_a} className="input" />
+          <input name="team_b" defaultValue={match.team_b} className="input" />
+          <input
+            name="team_a_flag"
+            defaultValue={match.team_a_flag}
+            className="input"
+          />
+          <input
+            name="team_b_flag"
+            defaultValue={match.team_b_flag}
+            className="input"
+          />
+
+          <select name="status" defaultValue={match.status} className="input">
+            <option value="Ouvert">Ouvert</option>
+            <option value="Fermé">Fermé</option>
+            <option value="Terminé">Terminé</option>
+          </select>
+
+          <select
+  name="winner"
+  defaultValue={match.winner ?? ""}
+  className="input"
+>
+  <option value="">Aucun gagnant</option>
+  <option value="team_a">Équipe A gagne</option>
+  <option value="draw">Match nul</option>
+  <option value="team_b">Équipe B gagne</option>
+</select>
+
+          <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
+            Modifier
+          </button>
+        </form>
+
+        <form action={deleteContestMatch} className="mt-3">
+          <input type="hidden" name="id" value={match.id} />
           <button className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 font-black text-red-400">
             Supprimer
           </button>

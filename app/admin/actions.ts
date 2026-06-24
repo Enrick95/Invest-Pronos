@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 async function checkAdmin() {
@@ -62,6 +63,7 @@ export async function deleteMatch(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
 }
+
 export async function addVipTicket(formData: FormData) {
   const supabase = await checkAdmin();
 
@@ -100,22 +102,19 @@ export async function addVipTicket(formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/admin");
 }
+
 export async function deleteVipTicket(formData: FormData) {
   const id = formData.get("id") as string;
-
   const supabase = await checkAdmin();
 
-  await supabase
-    .from("vip_tickets")
-    .delete()
-    .eq("id", id);
+  await supabase.from("vip_tickets").delete().eq("id", id);
 
   revalidatePath("/admin");
   revalidatePath("/dashboard");
 }
+
 export async function updateVipTicket(formData: FormData) {
   const id = formData.get("id") as string;
-
   const supabase = await checkAdmin();
 
   await supabase
@@ -135,9 +134,8 @@ export async function updateVipTicket(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/dashboard");
 }
-export async function addResult(formData: FormData) {
-  "use server";
 
+export async function addResult(formData: FormData) {
   const supabase = await checkAdmin();
 
   const { error } = await supabase.from("results").insert({
@@ -158,8 +156,6 @@ export async function addResult(formData: FormData) {
 }
 
 export async function updateResult(formData: FormData) {
-  "use server";
-
   const supabase = await checkAdmin();
 
   const id = formData.get("id");
@@ -185,8 +181,6 @@ export async function updateResult(formData: FormData) {
 }
 
 export async function deleteResult(formData: FormData) {
-  "use server";
-
   const supabase = await checkAdmin();
 
   const id = formData.get("id");
@@ -199,4 +193,127 @@ export async function deleteResult(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/resultats");
+}
+
+export async function addContestMatch(formData: FormData) {
+  const supabase = await checkAdmin();
+
+  const { error } = await supabase.from("contest_matches").insert({
+    date: formData.get("date"),
+    time: formData.get("time"),
+    team_a: formData.get("team_a"),
+    team_b: formData.get("team_b"),
+    team_a_flag: formData.get("team_a_flag"),
+    team_b_flag: formData.get("team_b_flag"),
+    status: formData.get("status"),
+    winner: formData.get("winner") || null,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/challenge");
+}
+
+export async function updateContestMatch(formData: FormData) {
+  const supabase = await checkAdmin();
+
+  const id = formData.get("id") as string;
+  const status = formData.get("status") as string;
+  const winner = formData.get("winner") as string;
+
+  const { error: updateError } = await supabase
+    .from("contest_matches")
+    .update({
+      date: formData.get("date"),
+      time: formData.get("time"),
+      team_a: formData.get("team_a"),
+      team_b: formData.get("team_b"),
+      team_a_flag: formData.get("team_a_flag"),
+      team_b_flag: formData.get("team_b_flag"),
+      status,
+      winner: winner || null,
+    })
+    .eq("id", id);
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  if (status === "Terminé" && winner) {
+    const { error: resetError } = await supabase
+      .from("contest_predictions")
+      .update({ point: 0 })
+      .eq("match_id", id);
+
+    if (resetError) {
+      throw new Error(resetError.message);
+    }
+
+    const { error: pointsError } = await supabase
+      .from("contest_predictions")
+      .update({ point: 3 })
+      .eq("match_id", id)
+      .eq("prediction", winner);
+
+    if (pointsError) {
+      throw new Error(pointsError.message);
+    }
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/challenge");
+}
+
+export async function deleteContestMatch(formData: FormData) {
+  const supabase = await checkAdmin();
+
+  const id = formData.get("id");
+
+  await supabase.from("contest_matches").delete().eq("id", id);
+
+  revalidatePath("/admin");
+  revalidatePath("/challenge");
+}
+
+export async function addContestPrediction(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/connexion");
+  }
+
+  const matchId = formData.get("match_id");
+  const prediction = formData.get("prediction");
+
+  const { data: existingPrediction } = await supabase
+    .from("contest_predictions")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("match_id", matchId)
+    .maybeSingle();
+
+  if (existingPrediction) {
+    revalidatePath("/challenge");
+    return;
+  }
+
+  const { error } = await supabase.from("contest_predictions").insert({
+    user_id: user.id,
+    match_id: matchId,
+    prediction,
+    point: 0,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/challenge");
 }

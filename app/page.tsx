@@ -10,6 +10,7 @@ export default async function Home() {
     .order("created_at", { ascending: true });
 
   const matches = data ?? [];
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#050505] text-white">
       <header className="sticky top-0 z-50 border-b border-[#2f2415] bg-black/95 backdrop-blur-xl">
@@ -50,6 +51,7 @@ export default async function Home() {
           <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto">
             {[
               ["Accueil", "/"],
+              ["Challenge", "/challenge"],
               ["Matchs", "#matchs-du-jour"],
               ["Résultats", "/resultats"],
               ["VIP", "/vip"],
@@ -127,6 +129,89 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* BLOC CHALLENGE AJOUTÉ */}
+      <section className="mx-auto max-w-7xl px-4 pb-10 md:px-8 md:pb-16">
+        <div className="overflow-hidden rounded-[28px] border border-[#4f3814] bg-[linear-gradient(135deg,#17110a_0%,#0d0d0d_45%,#17110a_100%)] shadow-2xl">
+          <div className="grid gap-8 px-6 py-8 md:grid-cols-[1.3fr_0.9fr] md:px-10 md:py-10">
+            <div>
+              <div className="mb-4 inline-flex rounded-full bg-green-500 px-4 py-1 text-xs font-black uppercase text-black">
+                Challenge gratuit
+              </div>
+
+              <h2 className="text-3xl font-black leading-tight md:text-5xl">
+                ⚽ Challenge Coupe du Monde 2026
+              </h2>
+
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 md:text-lg">
+                Pronostique gratuitement les matchs de la Coupe du Monde, marque
+                des points après chaque résultat et grimpe dans le classement
+                général pour tenter de finir tout en haut.
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
+                  ✅ 100% gratuit
+                </div>
+                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
+                  🏆 Classement en direct
+                </div>
+                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
+                  🎯 1 prono par match
+                </div>
+              </div>
+
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/challenge"
+                  className="rounded-full bg-gradient-to-r from-[#c99735] via-[#e6bb63] to-[#c99735] px-7 py-4 text-center text-sm font-black text-black md:text-base"
+                >
+                  Participer au challenge
+                </Link>
+
+                <Link
+                  href="/challenge"
+                  className="rounded-full border border-[#d4a64a]/50 bg-black/40 px-7 py-4 text-center text-sm font-black text-white md:text-base"
+                >
+                  Voir le classement
+                </Link>
+              </div>
+            </div>
+
+            <div className="rounded-[24px] border border-[#3a2a14] bg-[#111111] p-6 md:p-8">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
+                Comment ça marche ?
+              </p>
+
+              <div className="mt-6 space-y-4">
+                {[
+                  "1. Crée ton compte gratuitement",
+                  "2. Choisis le vainqueur de chaque match",
+                  "3. Gagne des points quand ton prono est bon",
+                  "4. Monte dans le classement du concours",
+                ].map((item, index) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d4a64a] text-sm font-black text-black">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm font-semibold text-white/80 md:text-base">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-4 text-sm font-bold text-green-400">
+                🔥 Le challenge est déjà ouvert, tu peux rejoindre le concours dès
+                maintenant.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section
         id="matchs-du-jour"
         className="mx-auto max-w-7xl px-4 pb-10 md:px-8 md:pb-12"
@@ -193,144 +278,140 @@ export default async function Home() {
           </div>
         </div>
       </section>
-<section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-20">
-  <div className="mb-7 text-center md:mb-10">
-    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#d4a64a] md:text-xs">
-      Pourquoi nous choisir
-    </p>
 
-    <h2 className="text-3xl font-black md:text-5xl">
-      Pourquoi rejoindre le VIP ?
-    </h2>
-
-    <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/60 md:mt-5 md:text-lg">
-      Un espace conçu pour accéder à des pronostics suivis sérieusement avec
-      une approche transparente.
-    </p>
-  </div>
-
-  <div className="grid gap-4 md:grid-cols-3">
-    {[
-      {
-        icon: "⭐",
-        title: "Pronostics quotidiens",
-        text: "Les meilleures opportunités sélectionnées chaque jour.",
-      },
-      {
-        icon: "📊",
-        title: "Résultats transparents",
-        text: "Performances, taux de réussite et historique accessibles.",
-      },
-      {
-        icon: "🎯",
-        title: "Analyses détaillées",
-        text: "Une explication simple pour comprendre le contexte du match.",
-      },
-    ].map((item) => (
-      <div
-        key={item.title}
-        className="rounded-[22px] border border-[#2a2013] bg-[#111111] p-5 md:rounded-[28px] md:p-8"
-      >
-        <div className="mb-4 text-3xl md:mb-5 md:text-4xl">{item.icon}</div>
-
-        <h3 className="text-xl font-black md:text-2xl">{item.title}</h3>
-
-        <p className="mt-3 text-sm leading-6 text-white/60 md:mt-4 md:leading-7">
-          {item.text}
-        </p>
-      </div>
-    ))}
-  </div>
-
-  <div className="mt-6 grid gap-3 sm:grid-cols-3 md:mt-10 md:gap-4">
-    {[
-      ["128+", "Membres VIP"],
-      ["2+", "Paris publiés"],
-      ["100%", "Taux de réussite"],
-    ].map(([value, label]) => (
-      <div
-        key={label}
-        className="rounded-[20px] border border-[#2a2013] bg-[#111111] p-4 text-center md:rounded-[24px] md:p-5"
-      >
-        <p className="text-3xl font-black text-[#d4a64a] md:text-4xl">
-          {value}
-        </p>
-        <p className="mt-1 text-xs text-white/60 md:mt-2 md:text-sm">
-          {label}
-        </p>
-      </div>
-    ))}
-  </div>
-
-  <div className="mt-7 text-center md:mt-10">
-    <Link
-      href="/vip"
-      className="inline-block rounded-full bg-gradient-to-r from-[#c99735] via-[#e6bb63] to-[#c99735] px-8 py-3 text-sm font-black text-black md:px-10 md:py-4 md:text-base"
-    >
-      Rejoindre le VIP →
-    </Link>
-  </div>
-</section>
-<footer className="mt-16 border-t border-[#2a2013] bg-[#080808]">
-  <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
-    <div className="grid gap-10 md:grid-cols-2">
-      <div>
-        <h3 className="text-2xl font-black text-[#d4a64a]">
-          Enrick Pronos
-        </h3>
-
-        <p className="mt-4 max-w-md text-sm leading-7 text-white/55">
-          Pronostics premium, analyses détaillées et suivi transparent des
-          performances pour les passionnés de sport.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-8 md:justify-self-end">
-        <div>
-          <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
-            Navigation
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-20">
+        <div className="mb-7 text-center md:mb-10">
+          <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#d4a64a] md:text-xs">
+            Pourquoi nous choisir
           </p>
 
-          <div className="flex flex-col gap-3 text-sm text-white/65">
-            <Link href="/">Accueil</Link>
-            <Link href="/resultats">Résultats</Link>
-            <Link href="/vip">VIP</Link>
-            <Link href="/connexion">Connexion</Link>
-          </div>
-        </div>
+          <h2 className="text-3xl font-black md:text-5xl">
+            Pourquoi rejoindre le VIP ?
+          </h2>
 
-        <div>
-          <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
-            VIP
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/60 md:mt-5 md:text-lg">
+            Un espace conçu pour accéder à des pronostics suivis sérieusement avec
+            une approche transparente.
           </p>
+        </div>
 
-          <div className="flex flex-col gap-3 text-sm text-white/65">
-            
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              icon: "⭐",
+              title: "Pronostics quotidiens",
+              text: "Les meilleures opportunités sélectionnées chaque jour.",
+            },
+            {
+              icon: "📊",
+              title: "Résultats transparents",
+              text: "Performances, taux de réussite et historique accessibles.",
+            },
+            {
+              icon: "🎯",
+              title: "Analyses détaillées",
+              text: "Une explication simple pour comprendre le contexte du match.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[22px] border border-[#2a2013] bg-[#111111] p-5 md:rounded-[28px] md:p-8"
+            >
+              <div className="mb-4 text-3xl md:mb-5 md:text-4xl">{item.icon}</div>
 
-            <Link href="/vip">
-              Offres VIP
-            </Link>
+              <h3 className="text-xl font-black md:text-2xl">{item.title}</h3>
 
-            <Link href="/resultats">
-              Historique
-            </Link>
+              <p className="mt-3 text-sm leading-6 text-white/60 md:mt-4 md:leading-7">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3 md:mt-10 md:gap-4">
+          {[
+            ["128+", "Membres VIP"],
+            ["2+", "Paris publiés"],
+            ["100%", "Taux de réussite"],
+          ].map(([value, label]) => (
+            <div
+              key={label}
+              className="rounded-[20px] border border-[#2a2013] bg-[#111111] p-4 text-center md:rounded-[24px] md:p-5"
+            >
+              <p className="text-3xl font-black text-[#d4a64a] md:text-4xl">
+                {value}
+              </p>
+              <p className="mt-1 text-xs text-white/60 md:mt-2 md:text-sm">
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-7 text-center md:mt-10">
+          <Link
+            href="/vip"
+            className="inline-block rounded-full bg-gradient-to-r from-[#c99735] via-[#e6bb63] to-[#c99735] px-8 py-3 text-sm font-black text-black md:px-10 md:py-4 md:text-base"
+          >
+            Rejoindre le VIP →
+          </Link>
+        </div>
+      </section>
+
+      <footer className="mt-16 border-t border-[#2a2013] bg-[#080808]">
+        <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
+          <div className="grid gap-10 md:grid-cols-2">
+            <div>
+              <h3 className="text-2xl font-black text-[#d4a64a]">
+                Enrick Pronos
+              </h3>
+
+              <p className="mt-4 max-w-md text-sm leading-7 text-white/55">
+                Pronostics premium, analyses détaillées et suivi transparent des
+                performances pour les passionnés de sport.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 md:justify-self-end">
+              <div>
+                <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
+                  Navigation
+                </p>
+
+                <div className="flex flex-col gap-3 text-sm text-white/65">
+                  <Link href="/">Accueil</Link>
+                  <Link href="/challenge">Challenge</Link>
+                  <Link href="/resultats">Résultats</Link>
+                  <Link href="/vip">VIP</Link>
+                  <Link href="/connexion">Connexion</Link>
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
+                  VIP
+                </p>
+
+                <div className="flex flex-col gap-3 text-sm text-white/65">
+                  <Link href="/vip">Offres VIP</Link>
+                  <Link href="/resultats">Historique</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 border-t border-white/10 pt-6">
+            <div className="flex flex-col gap-3 text-center text-xs text-white/40 md:flex-row md:items-center md:justify-between md:text-sm">
+              <p>© 2025 Enrick Pronos. Tous droits réservés.</p>
+
+              <p>
+                +18 ans • Jouez responsable • Les paris sportifs comportent des
+                risques.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div className="mt-10 border-t border-white/10 pt-6">
-      <div className="flex flex-col gap-3 text-center text-xs text-white/40 md:flex-row md:items-center md:justify-between md:text-sm">
-        <p>© 2025 Enrick Pronos. Tous droits réservés.</p>
-
-        <p>
-          +18 ans • Jouez responsable • Les paris sportifs comportent des risques.
-        </p>
-      </div>
-    </div>
-  </div>
-</footer>
+      </footer>
     </main>
-  
   );
 }
