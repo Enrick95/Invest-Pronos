@@ -175,7 +175,7 @@ export default async function Home() {
               </div>
 
               <Link
-                href="/espace-vip"
+                href="/connexion"
                 className="mt-5 flex items-center justify-center gap-2 rounded-full border border-[#d4a64a]/40 bg-[#1b140b] px-5 py-3 text-sm font-black text-[#d4a64a] md:mt-0"
               >
                 🔒 VIP
@@ -185,7 +185,7 @@ export default async function Home() {
 
           <div className="p-5 md:p-8">
             <Link
-              href="/espace-vip"
+              href="/connexion"
               className="block rounded-2xl border border-[#d4a64a] py-4 text-center text-sm font-black text-[#d4a64a] md:py-5 md:text-lg"
             >
               Voir tous les matchs du jour →
