@@ -11,6 +11,46 @@ export default async function Home() {
 
   const matches = data ?? [];
 
+  const { data: challengeMatches } = await supabase
+    .from("contest_matches")
+    .select("*")
+    .order("date", { ascending: true })
+    .order("time", { ascending: true })
+    .limit(3);
+
+  const { data: predictions } = await supabase
+    .from("contest_predictions")
+    .select("user_id, point");
+
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("user_id, pseudo");
+
+  const profilesMap = new Map<string, string>();
+
+  for (const profile of profiles ?? []) {
+    profilesMap.set(profile.user_id, profile.pseudo);
+  }
+
+  const rankingMap = new Map<string, number>();
+
+  for (const prediction of predictions ?? []) {
+    const currentPoints = rankingMap.get(prediction.user_id) ?? 0;
+    rankingMap.set(
+      prediction.user_id,
+      currentPoints + (prediction.point ?? 0)
+    );
+  }
+
+  const ranking = Array.from(rankingMap.entries())
+    .map(([userId, points]) => ({
+      userId,
+      points,
+      pseudo: profilesMap.get(userId) || `Joueur ${userId.slice(0, 6)}`,
+    }))
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 3);
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#050505] text-white">
       <header className="sticky top-0 z-50 border-b border-[#2f2415] bg-black/95 backdrop-blur-xl">
@@ -103,8 +143,6 @@ export default async function Home() {
             <span className="block">plus exclusifs.</span>
           </h1>
 
-          <div className="mx-auto mt-5 h-1 w-14 rounded-full bg-[#d4a64a] md:mt-7 md:w-20" />
-
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/65 md:mt-7 md:text-xl md:leading-8">
             Rejoins un espace VIP avec mes sélections, mes analyses et mes
             statistiques, dans une expérience premium pensée pour les vrais
@@ -120,22 +158,21 @@ export default async function Home() {
             </Link>
 
             <Link
-              href="/resultats"
+              href="/challenge"
               className="rounded-full border border-[#d4a64a]/50 bg-black/40 px-7 py-3 text-sm font-black text-white md:px-9 md:py-4 md:text-base"
             >
-              Voir les résultats
+              Challenge gratuit
             </Link>
           </div>
         </div>
       </section>
 
-      {/* BLOC CHALLENGE AJOUTÉ */}
       <section className="mx-auto max-w-7xl px-4 pb-10 md:px-8 md:pb-16">
-        <div className="overflow-hidden rounded-[28px] border border-[#4f3814] bg-[linear-gradient(135deg,#17110a_0%,#0d0d0d_45%,#17110a_100%)] shadow-2xl">
-          <div className="grid gap-8 px-6 py-8 md:grid-cols-[1.3fr_0.9fr] md:px-10 md:py-10">
+        <div className="overflow-hidden rounded-[30px] border border-[#4f3814] bg-[linear-gradient(135deg,#17110a_0%,#0d0d0d_48%,#17110a_100%)] shadow-2xl">
+          <div className="grid gap-8 px-5 py-7 md:grid-cols-[1.1fr_0.9fr] md:px-10 md:py-10">
             <div>
               <div className="mb-4 inline-flex rounded-full bg-green-500 px-4 py-1 text-xs font-black uppercase text-black">
-                Challenge gratuit
+                Concours gratuit
               </div>
 
               <h2 className="text-3xl font-black leading-tight md:text-5xl">
@@ -143,29 +180,37 @@ export default async function Home() {
               </h2>
 
               <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 md:text-lg">
-                Pronostique gratuitement les matchs de la Coupe du Monde, marque
-                des points après chaque résultat et grimpe dans le classement
-                général pour tenter de finir tout en haut.
+                Pronostique gratuitement les matchs, marque des points après les
+                résultats et grimpe dans le classement en direct.
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3">
-                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
-                  ✅ 100% gratuit
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-[#d4a64a]/25 bg-black/30 p-4">
+                  <p className="text-2xl font-black text-[#d4a64a]">100%</p>
+                  <p className="mt-1 text-xs text-white/60">Gratuit</p>
                 </div>
-                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
-                  🏆 Classement en direct
+
+                <div className="rounded-2xl border border-[#d4a64a]/25 bg-black/30 p-4">
+                  <p className="text-2xl font-black text-[#d4a64a]">
+                    {challengeMatches?.length ?? 0}
+                  </p>
+                  <p className="mt-1 text-xs text-white/60">Matchs visibles</p>
                 </div>
-                <div className="rounded-full border border-[#d4a64a]/30 bg-[#1b140b] px-4 py-2 text-sm font-bold text-[#efc56f]">
-                  🎯 1 prono par match
+
+                <div className="rounded-2xl border border-[#d4a64a]/25 bg-black/30 p-4">
+                  <p className="text-2xl font-black text-[#d4a64a]">
+                    {ranking.length}
+                  </p>
+                  <p className="mt-1 text-xs text-white/60">Top joueurs</p>
                 </div>
               </div>
 
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/challenge"
                   className="rounded-full bg-gradient-to-r from-[#c99735] via-[#e6bb63] to-[#c99735] px-7 py-4 text-center text-sm font-black text-black md:text-base"
                 >
-                  Participer au challenge
+                  Participer gratuitement
                 </Link>
 
                 <Link
@@ -177,35 +222,97 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-[#3a2a14] bg-[#111111] p-6 md:p-8">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#d4a64a]">
-                Comment ça marche ?
-              </p>
+            <div className="space-y-4">
+              <div className="rounded-[24px] border border-[#3a2a14] bg-[#111111] p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-sm font-black uppercase tracking-[0.18em] text-[#d4a64a]">
+                    Prochains matchs
+                  </p>
 
-              <div className="mt-6 space-y-4">
-                {[
-                  "1. Crée ton compte gratuitement",
-                  "2. Choisis le vainqueur de chaque match",
-                  "3. Gagne des points quand ton prono est bon",
-                  "4. Monte dans le classement du concours",
-                ].map((item, index) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3 rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
+                  <Link
+                    href="/challenge"
+                    className="text-xs font-bold text-white/50"
                   >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d4a64a] text-sm font-black text-black">
-                      {index + 1}
+                    Voir tout →
+                  </Link>
+                </div>
+
+                <div className="space-y-3">
+                  {(challengeMatches ?? []).map((match) => (
+                    <div
+                      key={match.id}
+                      className="rounded-2xl border border-[#2a2013] bg-[#151515] p-3"
+                    >
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="rounded-full bg-[#d4a64a] px-3 py-1 text-[10px] font-black uppercase text-black">
+                          {match.status}
+                        </span>
+
+                        <span className="text-[10px] font-bold text-white/45">
+                          {match.date} • {match.time}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={match.team_a_flag}
+                            alt={match.team_a}
+                            className="h-8 w-8 rounded-full border border-white/10 object-cover"
+                          />
+                          <p className="text-xs font-black uppercase leading-tight">
+                            {match.team_a}
+                          </p>
+                        </div>
+
+                        <p className="text-xs font-black text-[#d4a64a]">VS</p>
+
+                        <div className="flex items-center justify-end gap-2 text-right">
+                          <p className="text-xs font-black uppercase leading-tight">
+                            {match.team_b}
+                          </p>
+                          <img
+                            src={match.team_b_flag}
+                            alt={match.team_b}
+                            className="h-8 w-8 rounded-full border border-white/10 object-cover"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm font-semibold text-white/80 md:text-base">
-                      {item}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-4 text-sm font-bold text-green-400">
-                🔥 Le challenge est déjà ouvert, tu peux rejoindre le concours dès
-                maintenant.
+              <div className="rounded-[24px] border border-[#3a2a14] bg-[#111111] p-5">
+                <p className="mb-4 text-sm font-black uppercase tracking-[0.18em] text-[#d4a64a]">
+                  Top classement
+                </p>
+
+                {ranking.length === 0 ? (
+                  <p className="text-sm text-white/50">
+                    Aucun joueur pour le moment.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {ranking.map((player, index) => (
+                      <div
+                        key={player.userId}
+                        className="flex items-center justify-between rounded-2xl border border-[#2a2013] bg-[#151515] px-4 py-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#d4a64a] text-sm font-black text-black">
+                            {index + 1}
+                          </span>
+                          <p className="text-sm font-black">{player.pseudo}</p>
+                        </div>
+
+                        <p className="text-sm font-black text-[#d4a64a]">
+                          {player.points} pts
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
