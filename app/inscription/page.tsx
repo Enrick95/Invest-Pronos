@@ -18,32 +18,78 @@ export default function InscriptionPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+
+    const pseudoClean = pseudo.trim();
+    const emailClean = email.trim().toLowerCase();
+
     setErreur("");
     setMessage("");
+
+    if (pseudoClean.length < 3) {
+      setErreur("Ton pseudo doit contenir au moins 3 caractères.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setErreur("Ton mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+
     setChargement(true);
 
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: emailClean,
       password,
       options: {
         data: {
-          pseudo,
+          pseudo: pseudoClean,
         },
       },
     });
 
-    setChargement(false);
-
     if (error || !data.user) {
-      setErreur(error?.message || "Erreur inconnue");
+      setChargement(false);
+
+      const message = error?.message || "Erreur inconnue";
+
+      if (message.toLowerCase().includes("already registered")) {
+        setErreur("Cet email est déjà utilisé. Essaie de te connecter.");
+        return;
+      }
+
+      if (message.toLowerCase().includes("rate limit")) {
+        setErreur("Trop de tentatives en même temps. Réessaie dans quelques minutes.");
+        return;
+      }
+
+      setErreur(message);
       return;
     }
 
-    setMessage("Compte créé avec succès. Tu peux maintenant te connecter.");
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      {
+        user_id: data.user.id,
+        pseudo: pseudoClean,
+      },
+      {
+        onConflict: "user_id",
+      }
+    );
+
+    if (profileError) {
+      setChargement(false);
+      setErreur(
+        `Compte créé, mais problème avec le pseudo : ${profileError.message}`
+      );
+      return;
+    }
+
+    setChargement(false);
+    setMessage("Compte créé avec succès. Redirection vers le challenge...");
 
     setTimeout(() => {
-      router.push("/connexion");
-    }, 1200);
+      router.push("/challenge");
+    }, 1000);
   }
 
   return (
