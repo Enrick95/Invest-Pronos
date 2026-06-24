@@ -69,13 +69,7 @@ function getDateBadge(date: string) {
   return normalized;
 }
 
-function TeamFlag({
-  src,
-  alt,
-}: {
-  src: string | null;
-  alt: string;
-}) {
+function TeamFlag({ src, alt }: { src: string | null; alt: string }) {
   if (!src) {
     return (
       <div className="h-10 w-10 rounded-full border border-white/10 bg-white/5 md:h-14 md:w-14" />
@@ -122,10 +116,7 @@ export default async function ChallengePage() {
 
   for (const prediction of (predictions ?? []) as ContestPrediction[]) {
     const currentPoints = rankingMap.get(prediction.user_id) ?? 0;
-    rankingMap.set(
-      prediction.user_id,
-      currentPoints + (prediction.point ?? 0)
-    );
+    rankingMap.set(prediction.user_id, currentPoints + (prediction.point ?? 0));
   }
 
   const ranking = Array.from(rankingMap.entries())
@@ -153,7 +144,6 @@ export default async function ChallengePage() {
   return (
     <main className="min-h-screen bg-[#050505] px-3 py-4 text-white md:px-8 md:py-8">
       <section className="mx-auto max-w-6xl">
-        {/* TOP BAR */}
         <div className="mb-4 flex items-center justify-between gap-3">
           <Link href="/" className="text-xs font-bold text-[#d4a64a] md:text-sm">
             ← Retour accueil
@@ -182,7 +172,6 @@ export default async function ChallengePage() {
         </div>
 
         <div className="overflow-hidden rounded-[26px] border border-[#4f3814] bg-[#111111] shadow-2xl md:rounded-[34px]">
-          {/* HERO */}
           <div className="relative overflow-hidden border-b border-[#2a2013]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(212,166,74,0.18),transparent_35%),radial-gradient(circle_at_20%_20%,rgba(212,166,74,0.12),transparent_28%)]" />
 
@@ -218,7 +207,6 @@ export default async function ChallengePage() {
             </div>
           </div>
 
-          {/* LOTS */}
           <div className="border-b border-[#2a2013] px-4 py-6 md:px-12 md:py-8">
             <h2 className="text-xl font-black md:text-2xl">🏆 Lots à gagner</h2>
 
@@ -228,8 +216,11 @@ export default async function ChallengePage() {
                 <p className="mt-2 text-lg font-black md:mt-3 md:text-xl">
                   2ème place
                 </p>
-                <p className="mt-1 text-xs text-white/50 md:text-sm">
-                  Lot à définir
+                <p className="mt-1 text-base font-black text-[#d4a64a] md:text-lg">
+                  50€
+                </p>
+                <p className="mt-1 text-xs text-white/60 md:text-sm">
+                  + 15 jours VIP
                 </p>
               </div>
 
@@ -239,8 +230,8 @@ export default async function ChallengePage() {
                   1ère place
                 </p>
                 <p className="mt-1 text-sm font-bold">Grand gagnant</p>
-                <p className="mt-1 text-xs text-white/50 md:text-sm">
-                  Lot à définir
+                <p className="mt-2 text-base font-black text-[#d4a64a] md:text-xl">
+                  100€ + 1 mois VIP
                 </p>
               </div>
 
@@ -249,14 +240,16 @@ export default async function ChallengePage() {
                 <p className="mt-2 text-lg font-black md:mt-3 md:text-xl">
                   3ème place
                 </p>
-                <p className="mt-1 text-xs text-white/50 md:text-sm">
-                  Lot à définir
+                <p className="mt-1 text-base font-black text-[#d4a64a] md:text-lg">
+                  25€
+                </p>
+                <p className="mt-1 text-xs text-white/60 md:text-sm">
+                  + 7 jours VIP
                 </p>
               </div>
             </div>
           </div>
 
-          {/* MATCHS */}
           <div className="border-b border-[#2a2013] px-4 py-6 md:px-12 md:py-8">
             <div className="mb-4 flex items-center justify-between gap-3 md:mb-5">
               <h2 className="text-xl font-black md:text-2xl">
@@ -286,7 +279,6 @@ export default async function ChallengePage() {
                       key={match.id}
                       className="rounded-[22px] border border-[#3a2a14] bg-[linear-gradient(180deg,#171717_0%,#101010_100%)] p-4 md:rounded-[26px] md:p-6"
                     >
-                      {/* HEADER MATCH */}
                       <div className="mb-4 flex items-center justify-between gap-3">
                         <div
                           className={`w-fit rounded-full border px-3 py-1 text-[10px] font-black uppercase md:text-[11px] ${getStatusStyles(
@@ -301,7 +293,6 @@ export default async function ChallengePage() {
                         </p>
                       </div>
 
-                      {/* VERSION MOBILE */}
                       <div className="md:hidden">
                         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                           <div className="flex flex-col items-center text-center">
@@ -339,7 +330,6 @@ export default async function ChallengePage() {
                         </div>
                       </div>
 
-                      {/* VERSION DESKTOP */}
                       <div className="hidden items-center gap-5 md:grid md:grid-cols-[1fr_auto_1fr]">
                         <div className="flex items-center gap-4">
                           <TeamFlag src={match.team_a_flag} alt={match.team_a} />
@@ -375,7 +365,6 @@ export default async function ChallengePage() {
                         </div>
                       </div>
 
-                      {/* BAS MATCH */}
                       {match.status === "Terminé" ? (
                         <div className="mt-4 flex justify-center md:mt-6 md:justify-end">
                           <div className="rounded-full border border-green-500/35 bg-green-500/10 px-4 py-2 text-xs font-black text-green-400 md:px-5 md:text-sm">
@@ -425,7 +414,6 @@ export default async function ChallengePage() {
                         </div>
                       ) : (
                         <>
-                          {/* MOBILE */}
                           <div className="mt-4 grid grid-cols-3 gap-2 md:hidden">
                             <form action={addContestPrediction}>
                               <input type="hidden" name="match_id" value={match.id} />
@@ -452,7 +440,6 @@ export default async function ChallengePage() {
                             </form>
                           </div>
 
-                          {/* DESKTOP */}
                           <div className="mt-6 hidden gap-3 md:grid md:grid-cols-3">
                             <form action={addContestPrediction}>
                               <input type="hidden" name="match_id" value={match.id} />
@@ -487,7 +474,6 @@ export default async function ChallengePage() {
             )}
           </div>
 
-          {/* CLASSEMENT */}
           <div className="border-b border-[#2a2013] px-4 py-6 md:px-12 md:py-8">
             <div className="mb-4 flex items-center justify-between gap-4 md:mb-6">
               <h2 className="text-xl font-black md:text-2xl">
@@ -506,7 +492,9 @@ export default async function ChallengePage() {
                     <div
                       key={player.userId}
                       className={`rounded-[22px] border p-4 text-center md:rounded-[24px] md:p-5 ${
-                        index === 0
+                        user?.id === player.userId
+                          ? "border-green-500 bg-[linear-gradient(180deg,#1a140b_0%,#141414_100%)] shadow-[0_0_35px_rgba(34,197,94,0.18)]"
+                          : index === 0
                           ? "border-[#d4a64a] bg-[#1b140b] shadow-[0_0_35px_rgba(212,166,74,0.15)] md:scale-105"
                           : "border-[#2a2013] bg-[#151515]"
                       }`}
@@ -518,8 +506,8 @@ export default async function ChallengePage() {
                       </p>
 
                       {user?.id === player.userId && (
-                        <p className="mt-2 inline-flex rounded-full bg-green-500 px-3 py-1 text-[10px] font-black uppercase text-black md:text-[11px]">
-                          C’est toi
+                        <p className="mt-2 inline-flex rounded-full border border-green-400/30 bg-green-500 px-3 py-1 text-[10px] font-black uppercase text-black shadow-[0_0_20px_rgba(34,197,94,0.35)] md:text-[11px]">
+                          C’est toi 🔥
                         </p>
                       )}
 
@@ -535,7 +523,11 @@ export default async function ChallengePage() {
                     {restRanking.map((player, index) => (
                       <div
                         key={player.userId}
-                        className="flex items-center justify-between rounded-2xl border border-[#2a2013] bg-[#151515] px-4 py-3 md:px-5 md:py-4"
+                        className={`flex items-center justify-between rounded-2xl border px-4 py-3 md:px-5 md:py-4 ${
+                          user?.id === player.userId
+                            ? "border-green-500 bg-green-500/10"
+                            : "border-[#2a2013] bg-[#151515]"
+                        }`}
                       >
                         <div className="flex items-center gap-3 md:gap-4">
                           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-black text-white md:h-9 md:w-9 md:text-sm">
@@ -548,7 +540,7 @@ export default async function ChallengePage() {
                             </p>
                             {user?.id === player.userId && (
                               <p className="text-[10px] font-bold text-green-400 md:text-xs">
-                                C’est toi
+                                C’est toi 🔥
                               </p>
                             )}
                           </div>
@@ -569,7 +561,50 @@ export default async function ChallengePage() {
             </p>
           </div>
 
-          {/* VIP */}
+          <div className="border-b border-[#2a2013] px-4 py-6 md:px-12 md:py-8">
+            <h2 className="text-xl font-black md:text-2xl">
+              📌 Comment gagner des points ?
+            </h2>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl border border-green-500/25 bg-green-500/10 p-4 text-center">
+                <p className="text-2xl">✅</p>
+                <p className="mt-2 text-sm font-black text-green-400">
+                  Bon prono
+                </p>
+                <p className="mt-1 text-lg font-black text-white">3 points</p>
+              </div>
+
+              <div className="rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-center">
+                <p className="text-2xl">❌</p>
+                <p className="mt-2 text-sm font-black text-red-400">
+                  Mauvais prono
+                </p>
+                <p className="mt-1 text-lg font-black text-white">0 point</p>
+              </div>
+
+              <div className="rounded-2xl border border-[#d4a64a]/25 bg-[#1b140b] p-4 text-center">
+                <p className="text-2xl">🎯</p>
+                <p className="mt-2 text-sm font-black text-[#d4a64a]">
+                  Participation
+                </p>
+                <p className="mt-1 text-sm font-bold text-white">
+                  1 prono max par match
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-blue-500/25 bg-blue-500/10 p-4 text-center">
+                <p className="text-2xl">📊</p>
+                <p className="mt-2 text-sm font-black text-blue-300">
+                  Classement
+                </p>
+                <p className="mt-1 text-sm font-bold text-white">
+                  Mis à jour après les résultats
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-[#0b0b0b] px-4 py-6 text-center md:px-12 md:py-8">
             <h2 className="text-xl font-black md:text-3xl">
               Tu veux mes vrais pronostics premium ?
