@@ -135,3 +135,68 @@ export async function updateVipTicket(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/dashboard");
 }
+export async function addResult(formData: FormData) {
+  "use server";
+
+  const supabase = await checkAdmin();
+
+  const { error } = await supabase.from("results").insert({
+    date: formData.get("date"),
+    competition: formData.get("competition"),
+    match: formData.get("match"),
+    pronostic: formData.get("pronostic"),
+    cote: formData.get("cote"),
+    statut: formData.get("statut"),
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/resultats");
+}
+
+export async function updateResult(formData: FormData) {
+  "use server";
+
+  const supabase = await checkAdmin();
+
+  const id = formData.get("id");
+
+  const { error } = await supabase
+    .from("results")
+    .update({
+      date: formData.get("date"),
+      competition: formData.get("competition"),
+      match: formData.get("match"),
+      pronostic: formData.get("pronostic"),
+      cote: formData.get("cote"),
+      statut: formData.get("statut"),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/resultats");
+}
+
+export async function deleteResult(formData: FormData) {
+  "use server";
+
+  const supabase = await checkAdmin();
+
+  const id = formData.get("id");
+
+  const { error } = await supabase.from("results").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/resultats");
+}

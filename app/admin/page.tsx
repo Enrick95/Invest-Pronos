@@ -8,6 +8,9 @@ import {
   addVipTicket,
   deleteVipTicket,
   updateVipTicket,
+  addResult,
+updateResult,
+deleteResult,
 } from "./actions";
 
 export default async function AdminPage() {
@@ -34,6 +37,11 @@ export default async function AdminPage() {
       "id, title, sport, date, pronostic, cote, confiance, analyse, image_url, created_at"
     )
     .order("created_at", { ascending: false });
+
+    const { data: results } = await supabase
+  .from("results")
+  .select("*")
+  .order("created_at", { ascending: false });
 console.log("VIP TICKETS =", vipTickets);
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-8 text-white md:px-8">
@@ -230,6 +238,120 @@ console.log("VIP TICKETS =", vipTickets);
             </form>
           ))}
         </div>
+<div className="mt-12 rounded-[30px] border border-[#4f3814] bg-[#111111] p-6">
+  <h2 className="mb-6 text-3xl font-black text-[#d4a64a]">
+    Résultats pronostics
+  </h2>
+
+  <form action={addResult} className="grid gap-3">
+    <input
+      name="date"
+      placeholder="24/06"
+      className="input"
+      required
+    />
+    <input
+      name="competition"
+      placeholder="CAN U20"
+      className="input"
+      required
+    />
+    <input
+      name="match"
+      placeholder="Nouvelle-Zélande vs Égypte"
+      className="input"
+      required
+    />
+    <input
+      name="pronostic"
+      placeholder="Mohamed Salah passe décisive"
+      className="input"
+      required
+    />
+    <input
+      name="cote"
+      placeholder="4.00"
+      className="input"
+      required
+    />
+    <select name="statut" className="input" required>
+      <option value="">Choisir un statut</option>
+      <option value="Gagné">Gagné</option>
+      <option value="Perdu">Perdu</option>
+    </select>
+
+    <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
+      Ajouter le résultat
+    </button>
+  </form>
+
+  <div className="mt-8 space-y-4">
+    {results?.map((result) => (
+      <div
+        key={result.id}
+        className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
+      >
+        <form action={updateResult} className="grid gap-3">
+          <input type="hidden" name="id" value={result.id} />
+
+          <input
+            name="date"
+            defaultValue={result.date}
+            className="input"
+            required
+          />
+          <input
+            name="competition"
+            defaultValue={result.competition}
+            className="input"
+            required
+          />
+          <input
+            name="match"
+            defaultValue={result.match}
+            className="input"
+            required
+          />
+          <input
+            name="pronostic"
+            defaultValue={result.pronostic}
+            className="input"
+            required
+          />
+          <input
+            name="cote"
+            defaultValue={result.cote}
+            className="input"
+            required
+          />
+
+          <select
+            name="statut"
+            defaultValue={result.statut}
+            className="input"
+            required
+          >
+            <option value="Gagné">Gagné</option>
+            <option value="Perdu">Perdu</option>
+          </select>
+
+          <div className="flex gap-3">
+            <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
+              Mettre à jour
+            </button>
+          </div>
+        </form>
+
+        <form action={deleteResult} className="mt-3">
+          <input type="hidden" name="id" value={result.id} />
+          <button className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 font-black text-red-400">
+            Supprimer
+          </button>
+        </form>
+      </div>
+    ))}
+  </div>
+</div>
       </section>
     </main>
   );

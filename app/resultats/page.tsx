@@ -1,22 +1,19 @@
-export default function ResultatsPage() {
-  const resultats = [
-    {
-      date: "Aujourd'hui",
-      competition: "International",
-      match: "Nouvelle-Zélande vs Égypte",
-      pronostic: "Passe décisive Mohamed Salah",
-      cote: "4.00",
-      statut: "Gagné",
-    },
-    {
-      date: "Aujourd'hui",
-      competition: "International",
-      match: "Nouvelle-Zélande vs Égypte",
-      pronostic: "Passe décisive Mostafa Ziko",
-      cote: "5.00",
-      statut: "Gagné",
-    },
-  ];
+import { createClient } from "@/utils/supabase/server";
+
+export default async function ResultatsPage() {
+  const supabase = await createClient();
+
+  const { data: resultats } = await supabase
+    .from("results")
+    .select("id, date, competition, match, pronostic, cote, statut, created_at")
+    .order("created_at", { ascending: false });
+
+  const totalParis = resultats?.length ?? 0;
+  const totalGagnes =
+    resultats?.filter((item) => item.statut === "Gagné").length ?? 0;
+
+  const tauxReussite =
+    totalParis > 0 ? Math.round((totalGagnes / totalParis) * 100) : 0;
 
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-8 text-white md:px-6 md:py-12">
@@ -45,7 +42,9 @@ export default function ResultatsPage() {
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               Taux de réussite
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">100%</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">
+              {tauxReussite}%
+            </p>
           </div>
 
           <div className="rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:p-7">
@@ -59,14 +58,18 @@ export default function ResultatsPage() {
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               Paris publiés
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">2</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">
+              {totalParis}
+            </p>
           </div>
 
           <div className="rounded-[24px] border border-[#2a2013] bg-[#111111] p-5 md:p-7">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">
               Pronostics gagnants
             </p>
-            <p className="mt-3 text-4xl font-black text-[#d4a64a]">2</p>
+            <p className="mt-3 text-4xl font-black text-[#d4a64a]">
+              {totalGagnes}
+            </p>
           </div>
         </div>
 
@@ -82,59 +85,68 @@ export default function ResultatsPage() {
             </div>
 
             <span className="w-fit rounded-full border border-[#5e4318] bg-[#1b140b] px-4 py-2 text-xs font-bold text-[#efc56f]">
-              Mise à jour quotidienne
+              Mise à jour automatique
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px] border-separate border-spacing-y-3 text-left">
-              <thead>
-                <tr className="text-xs uppercase tracking-[0.18em] text-white/35">
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Compétition</th>
-                  <th className="px-4 py-2">Match</th>
-                  <th className="px-4 py-2">Pronostic</th>
-                  <th className="px-4 py-2">Cote</th>
-                  <th className="px-4 py-2">Résultat</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {resultats.map((item) => (
-                  <tr
-                    key={`${item.date}-${item.pronostic}`}
-                    className="bg-[#151515]"
-                  >
-                    <td className="rounded-l-2xl px-4 py-5 text-sm text-white/60">
-                      {item.date}
-                    </td>
-
-                    <td className="px-4 py-5 text-sm text-white/60">
-                      {item.competition}
-                    </td>
-
-                    <td className="px-4 py-5 font-bold text-white">
-                      {item.match}
-                    </td>
-
-                    <td className="px-4 py-5 text-sm text-white/70">
-                      {item.pronostic}
-                    </td>
-
-                    <td className="px-4 py-5 font-bold text-[#d4a64a]">
-                      {item.cote}
-                    </td>
-
-                    <td className="rounded-r-2xl px-4 py-5">
-                      <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-bold text-green-400">
-                        ✅ Gagné
-                      </span>
-                    </td>
+          {(resultats ?? []).length === 0 ? (
+            <div className="rounded-2xl bg-[#151515] px-5 py-8 text-center text-white/50">
+              Aucun résultat disponible pour le moment.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px] border-separate border-spacing-y-3 text-left">
+                <thead>
+                  <tr className="text-xs uppercase tracking-[0.18em] text-white/35">
+                    <th className="px-4 py-2">Date</th>
+                    <th className="px-4 py-2">Compétition</th>
+                    <th className="px-4 py-2">Match</th>
+                    <th className="px-4 py-2">Pronostic</th>
+                    <th className="px-4 py-2">Cote</th>
+                    <th className="px-4 py-2">Résultat</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody>
+                  {(resultats ?? []).map((item) => (
+                    <tr key={item.id} className="bg-[#151515]">
+                      <td className="rounded-l-2xl px-4 py-5 text-sm text-white/60">
+                        {item.date}
+                      </td>
+
+                      <td className="px-4 py-5 text-sm text-white/60">
+                        {item.competition}
+                      </td>
+
+                      <td className="px-4 py-5 font-bold text-white">
+                        {item.match}
+                      </td>
+
+                      <td className="px-4 py-5 text-sm text-white/70">
+                        {item.pronostic}
+                      </td>
+
+                      <td className="px-4 py-5 font-bold text-[#d4a64a]">
+                        {item.cote}
+                      </td>
+
+                      <td className="rounded-r-2xl px-4 py-5">
+                        <span
+                          className={
+                            item.statut === "Gagné"
+                              ? "rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-bold text-green-400"
+                              : "rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-400"
+                          }
+                        >
+                          {item.statut === "Gagné" ? "✅ Gagné" : "❌ Perdu"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 rounded-[28px] border border-[#4f3814] bg-[linear-gradient(180deg,#171717_0%,#101010_100%)] p-6 md:rounded-[36px] md:p-9">
