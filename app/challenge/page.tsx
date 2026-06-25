@@ -95,7 +95,7 @@ export default async function ChallengePage() {
  const { data: matches } = await supabase
   .from("contest_matches")
   .select("*")
-  .neq("status", "Terminé")
+  .not("status", "eq", "Terminé")
   .order("date", { ascending: true })
   .order("time", { ascending: true });
 
