@@ -313,15 +313,17 @@ export async function addContestPrediction(formData: FormData) {
   const [day, month, year] = String(match.date).split("/");
   const [hours, minutes] = String(match.time).split(":");
 
-  const matchDateTime = new Date(
+  // Les heures de tes matchs sont en heure France.
+  // En juin, la France est en UTC+2.
+  const matchDateTimeUtc = Date.UTC(
     Number(year),
     Number(month) - 1,
     Number(day),
-    Number(hours),
+    Number(hours) - 2,
     Number(minutes)
   );
 
-  if (Date.now() >= matchDateTime.getTime()) {
+  if (Date.now() >= matchDateTimeUtc) {
     throw new Error("Les pronostics pour ce match sont fermés.");
   }
 
