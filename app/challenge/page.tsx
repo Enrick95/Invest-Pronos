@@ -92,10 +92,10 @@ export default async function ChallengePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
- const { data: matches } = await supabase
+const { data: matches } = await supabase
   .from("contest_matches")
   .select("*")
-  .not("status", "eq", "Terminé")
+  .eq("status", "Ouvert")
   .order("date", { ascending: true })
   .order("time", { ascending: true });
 
