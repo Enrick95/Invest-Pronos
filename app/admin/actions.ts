@@ -303,11 +303,13 @@ export async function addContestPrediction(formData: FormData) {
   }
 
   if (!match) {
-    throw new Error("Match introuvable.");
+    revalidatePath("/challenge");
+    redirect("/challenge");
   }
 
   if (match.status !== "Ouvert") {
-    throw new Error("Les pronostics pour ce match sont fermés.");
+    revalidatePath("/challenge");
+    redirect("/challenge");
   }
 
   const [day, month, year] = String(match.date).split("/");
@@ -324,7 +326,8 @@ export async function addContestPrediction(formData: FormData) {
   );
 
   if (Date.now() >= matchDateTimeUtc) {
-    throw new Error("Les pronostics pour ce match sont fermés.");
+    revalidatePath("/challenge");
+    redirect("/challenge");
   }
 
   const { data: existingPrediction } = await supabase
