@@ -289,8 +289,41 @@ export async function addContestPrediction(formData: FormData) {
     redirect("/connexion");
   }
 
-  const matchId = formData.get("match_id");
-  const prediction = formData.get("prediction");
+  const matchId = formData.get("match_id") as string;
+  const prediction = formData.get("prediction") as string;
+
+  const { data: match, error: matchError } = await supabase
+    .from("contest_matches")
+    .select("id, date, time, status")
+    .eq("id", matchId)
+    .maybeSingle();
+
+  if (matchError) {
+    throw new Error(matchError.message);
+  }
+
+  if (!match) {
+    throw new Error("Match introuvable.");
+  }
+
+  if (match.status !== "Ouvert") {
+    throw new Error("Les pronostics pour ce match sont fermés.");
+  }
+
+  const [day, month, year] = String(match.date).split("/");
+  const [hours, minutes] = String(match.time).split(":");
+
+  const matchDateTime = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hours),
+    Number(minutes)
+  );
+
+  if (Date.now() >= matchDateTime.getTime()) {
+    throw new Error("Les pronostics pour ce match sont fermés.");
+  }
 
   const { data: existingPrediction } = await supabase
     .from("contest_predictions")
