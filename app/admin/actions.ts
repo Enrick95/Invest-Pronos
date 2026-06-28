@@ -289,6 +289,58 @@ export async function updateContestMatch(formData: FormData) {
   revalidatePath("/challenge");
 }
 
+export async function finishContestMatch(formData: FormData) {
+  const supabase = await checkAdmin();
+
+  const id = formData.get("id") as string;
+  const winner = formData.get("winner") as string;
+  const phase = (formData.get("phase") as string) || "groupes";
+  const pointsToGive = getContestPointsByPhase(phase);
+
+  if (!id) {
+    throw new Error("Match introuvable");
+  }
+
+  if (!winner) {
+    throw new Error("Choisis un gagnant avant de terminer le match");
+  }
+
+  const { error: updateError } = await supabase
+    .from("contest_matches")
+    .update({
+      status: "Terminé",
+      winner,
+      phase,
+    })
+    .eq("id", id);
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  const { error: resetError } = await supabase
+    .from("contest_predictions")
+    .update({ point: 0 })
+    .eq("match_id", id);
+
+  if (resetError) {
+    throw new Error(resetError.message);
+  }
+
+  const { error: pointsError } = await supabase
+    .from("contest_predictions")
+    .update({ point: pointsToGive })
+    .eq("match_id", id)
+    .eq("prediction", winner);
+
+  if (pointsError) {
+    throw new Error(pointsError.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/challenge");
+}
+
 export async function deleteContestMatch(formData: FormData) {
   const supabase = await checkAdmin();
 

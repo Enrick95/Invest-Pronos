@@ -13,6 +13,7 @@ import {
   deleteResult,
   addContestMatch,
   updateContestMatch,
+  finishContestMatch,
   deleteContestMatch,
 } from "./actions";
 
@@ -34,11 +35,8 @@ function SectionCard({
     >
       <div className="mb-6">
         <h2 className="text-2xl font-black text-white md:text-3xl">{title}</h2>
-        {subtitle ? (
-          <p className="mt-2 text-sm text-white/60">{subtitle}</p>
-        ) : null}
+        {subtitle ? <p className="mt-2 text-sm text-white/60">{subtitle}</p> : null}
       </div>
-
       {children}
     </section>
   );
@@ -129,31 +127,16 @@ export default async function AdminPage() {
               </p>
 
               <nav className="space-y-2">
-                <a
-                  href="#matchs-accueil"
-                  className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]"
-                >
+                <a href="#matchs-accueil" className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]">
                   ⚽ Matchs accueil
                 </a>
-
-                <a
-                  href="#tickets-vip"
-                  className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]"
-                >
+                <a href="#tickets-vip" className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]">
                   🎟️ Tickets VIP
                 </a>
-
-                <a
-                  href="#resultats-pronos"
-                  className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]"
-                >
+                <a href="#resultats-pronos" className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]">
                   📊 Résultats pronostics
                 </a>
-
-                <a
-                  href="#challenge-cdm"
-                  className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]"
-                >
+                <a href="#challenge-cdm" className="block rounded-2xl border border-[#2a2013] bg-black/20 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d4a64a] hover:text-[#d4a64a]">
                   🏆 Challenge Coupe du Monde
                 </a>
               </nav>
@@ -166,40 +149,12 @@ export default async function AdminPage() {
               title="⚽ Matchs accueil"
               subtitle="Ajoute, modifie ou supprime les matchs affichés sur la page d’accueil."
             >
-              <form
-                action={addMatch}
-                className="grid gap-3 rounded-[24px] border border-[#2a2013] bg-black/20 p-5 md:grid-cols-6"
-              >
-                <input
-                  name="league"
-                  placeholder="Compétition"
-                  className="input"
-                  required
-                />
-                <input
-                  name="date"
-                  placeholder="Aujourd'hui"
-                  className="input"
-                  required
-                />
-                <input
-                  name="time"
-                  placeholder="19:00"
-                  className="input"
-                  required
-                />
-                <input
-                  name="home"
-                  placeholder="Équipe 1"
-                  className="input"
-                  required
-                />
-                <input
-                  name="away"
-                  placeholder="Équipe 2"
-                  className="input"
-                  required
-                />
+              <form action={addMatch} className="grid gap-3 rounded-[24px] border border-[#2a2013] bg-black/20 p-5 md:grid-cols-6">
+                <input name="league" placeholder="Compétition" className="input" required />
+                <input name="date" placeholder="Aujourd'hui" className="input" required />
+                <input name="time" placeholder="19:00" className="input" required />
+                <input name="home" placeholder="Équipe 1" className="input" required />
+                <input name="away" placeholder="Équipe 2" className="input" required />
 
                 <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
                   Ajouter
@@ -208,47 +163,19 @@ export default async function AdminPage() {
 
               <div className="mt-6 space-y-4">
                 {(matches ?? []).map((match) => (
-                  <form
-                    key={match.id}
-                    action={updateMatch}
-                    className="grid gap-3 rounded-[24px] border border-[#2a2013] bg-black/30 p-5 md:grid-cols-7"
-                  >
+                  <form key={match.id} action={updateMatch} className="grid gap-3 rounded-[24px] border border-[#2a2013] bg-black/30 p-5 md:grid-cols-7">
                     <input type="hidden" name="id" defaultValue={match.id} />
-
-                    <input
-                      name="league"
-                      defaultValue={match.league}
-                      className="input"
-                    />
-                    <input
-                      name="date"
-                      defaultValue={match.date}
-                      className="input"
-                    />
-                    <input
-                      name="time"
-                      defaultValue={match.time}
-                      className="input"
-                    />
-                    <input
-                      name="home"
-                      defaultValue={match.home}
-                      className="input"
-                    />
-                    <input
-                      name="away"
-                      defaultValue={match.away}
-                      className="input"
-                    />
+                    <input name="league" defaultValue={match.league} className="input" />
+                    <input name="date" defaultValue={match.date} className="input" />
+                    <input name="time" defaultValue={match.time} className="input" />
+                    <input name="home" defaultValue={match.home} className="input" />
+                    <input name="away" defaultValue={match.away} className="input" />
 
                     <button className="rounded-xl border border-[#d4a64a] px-4 py-3 font-bold text-[#d4a64a]">
                       Modifier
                     </button>
 
-                    <button
-                      formAction={deleteMatch}
-                      className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 font-bold text-red-400"
-                    >
+                    <button formAction={deleteMatch} className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 font-bold text-red-400">
                       Supprimer
                     </button>
                   </form>
@@ -262,51 +189,14 @@ export default async function AdminPage() {
               subtitle="Ajoute tes tickets premium et modifie les anciens facilement."
             >
               <form action={addVipTicket} className="grid gap-3">
-                <input
-                  name="title"
-                  placeholder="🛡️ Ticket Safe"
-                  className="input"
-                  required
-                />
-                <input
-                  name="sport"
-                  placeholder="Football"
-                  className="input"
-                  required
-                />
-                <input
-                  name="date"
-                  placeholder="Aujourd'hui"
-                  className="input"
-                  required
-                />
-                <input
-                  name="pronostic"
-                  placeholder="Victoire Argentine"
-                  className="input"
-                  required
-                />
+                <input name="title" placeholder="🛡️ Ticket Safe" className="input" required />
+                <input name="sport" placeholder="Football" className="input" required />
+                <input name="date" placeholder="Aujourd'hui" className="input" required />
+                <input name="pronostic" placeholder="Victoire Argentine" className="input" required />
                 <input name="cote" placeholder="1.60" className="input" required />
-                <input
-                  name="confiance"
-                  placeholder="Élevée"
-                  className="input"
-                  required
-                />
-
-                <textarea
-                  name="analyse"
-                  placeholder="Analyse VIP"
-                  className="input min-h-[120px]"
-                  required
-                />
-
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  className="input"
-                />
+                <input name="confiance" placeholder="Élevée" className="input" required />
+                <textarea name="analyse" placeholder="Analyse VIP" className="input min-h-[120px]" required />
+                <input type="file" name="image" accept="image/*" className="input" />
 
                 <button className="rounded-xl bg-[#d4a64a] px-4 py-3 font-black text-black">
                   Ajouter Ticket
@@ -315,56 +205,18 @@ export default async function AdminPage() {
 
               <div className="mt-8 space-y-4">
                 {(vipTickets ?? []).map((ticket) => (
-                  <form
-                    key={ticket.id}
-                    action={updateVipTicket}
-                    className="rounded-[24px] border border-[#2a2013] bg-black/30 p-5"
-                  >
+                  <form key={ticket.id} action={updateVipTicket} className="rounded-[24px] border border-[#2a2013] bg-black/30 p-5">
                     <input type="hidden" name="id" defaultValue={ticket.id} />
 
                     <div className="grid gap-3 md:grid-cols-2">
-                      <input
-                        name="title"
-                        defaultValue={ticket.title}
-                        className="input"
-                      />
-                      <input
-                        name="sport"
-                        defaultValue={ticket.sport}
-                        className="input"
-                      />
-                      <input
-                        name="date"
-                        defaultValue={ticket.date}
-                        className="input"
-                      />
-                      <input
-                        name="pronostic"
-                        defaultValue={ticket.pronostic}
-                        className="input"
-                      />
-                      <input
-                        name="cote"
-                        defaultValue={ticket.cote}
-                        className="input"
-                      />
-                      <input
-                        name="confiance"
-                        defaultValue={ticket.confiance}
-                        className="input"
-                      />
-
-                      <input
-                        name="image_url"
-                        defaultValue={ticket.image_url}
-                        className="input md:col-span-2"
-                      />
-
-                      <textarea
-                        name="analyse"
-                        defaultValue={ticket.analyse}
-                        className="input min-h-[100px] md:col-span-2"
-                      />
+                      <input name="title" defaultValue={ticket.title} className="input" />
+                      <input name="sport" defaultValue={ticket.sport} className="input" />
+                      <input name="date" defaultValue={ticket.date} className="input" />
+                      <input name="pronostic" defaultValue={ticket.pronostic} className="input" />
+                      <input name="cote" defaultValue={ticket.cote} className="input" />
+                      <input name="confiance" defaultValue={ticket.confiance} className="input" />
+                      <input name="image_url" defaultValue={ticket.image_url} className="input md:col-span-2" />
+                      <textarea name="analyse" defaultValue={ticket.analyse} className="input min-h-[100px] md:col-span-2" />
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-3">
@@ -372,10 +224,7 @@ export default async function AdminPage() {
                         Modifier
                       </button>
 
-                      <button
-                        formAction={deleteVipTicket}
-                        className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 font-bold text-red-400"
-                      >
+                      <button formAction={deleteVipTicket} className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 font-bold text-red-400">
                         Supprimer
                       </button>
                     </div>
@@ -391,24 +240,9 @@ export default async function AdminPage() {
             >
               <form action={addResult} className="grid gap-3">
                 <input name="date" placeholder="24/06" className="input" required />
-                <input
-                  name="competition"
-                  placeholder="CAN U20"
-                  className="input"
-                  required
-                />
-                <input
-                  name="match"
-                  placeholder="Nouvelle-Zélande vs Égypte"
-                  className="input"
-                  required
-                />
-                <input
-                  name="pronostic"
-                  placeholder="Mohamed Salah passe décisive"
-                  className="input"
-                  required
-                />
+                <input name="competition" placeholder="CAN U20" className="input" required />
+                <input name="match" placeholder="Nouvelle-Zélande vs Égypte" className="input" required />
+                <input name="pronostic" placeholder="Mohamed Salah passe décisive" className="input" required />
                 <input name="cote" placeholder="4.00" className="input" required />
                 <select name="statut" className="input" required>
                   <option value="">Choisir un statut</option>
@@ -423,50 +257,16 @@ export default async function AdminPage() {
 
               <div className="mt-8 space-y-4">
                 {results?.map((result) => (
-                  <div
-                    key={result.id}
-                    className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
-                  >
+                  <div key={result.id} className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4">
                     <form action={updateResult} className="grid gap-3">
                       <input type="hidden" name="id" value={result.id} />
+                      <input name="date" defaultValue={result.date} className="input" required />
+                      <input name="competition" defaultValue={result.competition} className="input" required />
+                      <input name="match" defaultValue={result.match} className="input" required />
+                      <input name="pronostic" defaultValue={result.pronostic} className="input" required />
+                      <input name="cote" defaultValue={result.cote} className="input" required />
 
-                      <input
-                        name="date"
-                        defaultValue={result.date}
-                        className="input"
-                        required
-                      />
-                      <input
-                        name="competition"
-                        defaultValue={result.competition}
-                        className="input"
-                        required
-                      />
-                      <input
-                        name="match"
-                        defaultValue={result.match}
-                        className="input"
-                        required
-                      />
-                      <input
-                        name="pronostic"
-                        defaultValue={result.pronostic}
-                        className="input"
-                        required
-                      />
-                      <input
-                        name="cote"
-                        defaultValue={result.cote}
-                        className="input"
-                        required
-                      />
-
-                      <select
-                        name="statut"
-                        defaultValue={result.statut}
-                        className="input"
-                        required
-                      >
+                      <select name="statut" defaultValue={result.statut} className="input" required>
                         <option value="Gagné">Gagné</option>
                         <option value="Perdu">Perdu</option>
                       </select>
@@ -490,7 +290,7 @@ export default async function AdminPage() {
             <SectionCard
               id="challenge-cdm"
               title="🏆 Challenge Coupe du Monde"
-              subtitle="Ajoute les matchs du challenge, choisis la phase, ferme les paris et mets les gagnants pour attribuer les points."
+              subtitle="Ajoute les matchs du challenge, choisis la phase, puis termine le match avec le bouton dédié pour attribuer les points."
             >
               <div className="mb-5 rounded-2xl border border-[#d4a64a]/30 bg-[#d4a64a]/10 p-4 text-sm text-white/80">
                 <p className="font-black text-[#d4a64a]">
@@ -508,30 +308,10 @@ export default async function AdminPage() {
 
                 <PhaseSelect />
 
-                <input
-                  name="team_a"
-                  placeholder="France"
-                  className="input"
-                  required
-                />
-                <input
-                  name="team_b"
-                  placeholder="Brésil"
-                  className="input"
-                  required
-                />
-                <input
-                  name="team_a_flag"
-                  placeholder="https://..."
-                  className="input"
-                  required
-                />
-                <input
-                  name="team_b_flag"
-                  placeholder="https://..."
-                  className="input"
-                  required
-                />
+                <input name="team_a" placeholder="France" className="input" required />
+                <input name="team_b" placeholder="Brésil" className="input" required />
+                <input name="team_a_flag" placeholder="https://..." className="input" required />
+                <input name="team_b_flag" placeholder="https://..." className="input" required />
 
                 <select name="status" className="input" required>
                   <option value="Ouvert">Ouvert</option>
@@ -553,71 +333,46 @@ export default async function AdminPage() {
 
               <div className="mt-8 space-y-4">
                 {contestMatches?.map((match) => (
-                  <div
-                    key={match.id}
-                    className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4"
-                  >
+                  <div key={match.id} className="rounded-2xl border border-[#2a2013] bg-[#151515] p-4">
                     <form action={updateContestMatch} className="grid gap-3">
                       <input type="hidden" name="id" value={match.id} />
 
-                      <input
-                        name="date"
-                        defaultValue={match.date}
-                        className="input"
-                      />
-                      <input
-                        name="time"
-                        defaultValue={match.time}
-                        className="input"
-                      />
+                      <input name="date" defaultValue={match.date} className="input" />
+                      <input name="time" defaultValue={match.time} className="input" />
 
                       <PhaseSelect defaultValue={match.phase ?? "groupes"} />
 
-                      <input
-                        name="team_a"
-                        defaultValue={match.team_a}
-                        className="input"
-                      />
-                      <input
-                        name="team_b"
-                        defaultValue={match.team_b}
-                        className="input"
-                      />
-                      <input
-                        name="team_a_flag"
-                        defaultValue={match.team_a_flag}
-                        className="input"
-                      />
-                      <input
-                        name="team_b_flag"
-                        defaultValue={match.team_b_flag}
-                        className="input"
-                      />
+                      <input name="team_a" defaultValue={match.team_a} className="input" />
+                      <input name="team_b" defaultValue={match.team_b} className="input" />
+                      <input name="team_a_flag" defaultValue={match.team_a_flag} className="input" />
+                      <input name="team_b_flag" defaultValue={match.team_b_flag} className="input" />
 
-                      <select
-                        name="status"
-                        defaultValue={match.status}
-                        className="input"
-                      >
+                      <select name="status" defaultValue={match.status} className="input">
                         <option value="Ouvert">Ouvert</option>
                         <option value="Fermé">Fermé</option>
                         <option value="Terminé">Terminé</option>
                       </select>
 
-                      <select
-                        name="winner"
-                        defaultValue={match.winner ?? ""}
-                        className="input"
-                      >
+                      <select name="winner" defaultValue={match.winner ?? ""} className="input">
                         <option value="">Aucun gagnant</option>
                         <option value="team_a">Équipe A gagne</option>
                         <option value="draw">Match nul</option>
                         <option value="team_b">Équipe B gagne</option>
                       </select>
 
-                      <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
-                        Modifier
-                      </button>
+                      <div className="flex flex-wrap gap-3">
+                        <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
+                          Modifier
+                        </button>
+
+                        <button
+                          type="submit"
+                          formAction={finishContestMatch}
+                          className="rounded-xl bg-green-600 px-4 py-2 font-black text-white hover:bg-green-700"
+                        >
+                          🏁 Terminer le match
+                        </button>
+                      </div>
                     </form>
 
                     <form action={deleteContestMatch} className="mt-3">
