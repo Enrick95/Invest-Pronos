@@ -44,6 +44,19 @@ function SectionCard({
   );
 }
 
+function PhaseSelect({ defaultValue = "groupes" }: { defaultValue?: string }) {
+  return (
+    <select name="phase" defaultValue={defaultValue} className="input" required>
+      <option value="groupes">🌍 Phase de groupes — 3 pts</option>
+      <option value="seiziemes">🏆 16es de finale — 5 pts</option>
+      <option value="huitiemes">🔥 8es de finale — 7 pts</option>
+      <option value="quarts">⭐ Quarts de finale — 10 pts</option>
+      <option value="demies">🥇 Demi-finales — 12 pts</option>
+      <option value="finale">👑 Finale — 15 pts</option>
+    </select>
+  );
+}
+
 export default async function AdminPage() {
   const supabase = await createClient();
 
@@ -82,7 +95,6 @@ export default async function AdminPage() {
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-8 text-white md:px-8">
       <section className="mx-auto max-w-7xl">
-        {/* Top bar */}
         <div className="mb-8 flex items-center justify-between">
           <Link href="/" className="text-sm font-bold text-[#d4a64a]">
             ← Retour accueil
@@ -93,7 +105,6 @@ export default async function AdminPage() {
           </Link>
         </div>
 
-        {/* Hero */}
         <div className="rounded-[30px] border border-[#4f3814] bg-[#111111] p-6 md:p-8">
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#d4a64a]">
             Panel admin
@@ -110,9 +121,7 @@ export default async function AdminPage() {
           </p>
         </div>
 
-        {/* Layout admin */}
         <div className="mt-8 grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-          {/* Sidebar */}
           <aside className="lg:sticky lg:top-6 lg:self-start">
             <div className="rounded-[28px] border border-[#4f3814] bg-[#111111] p-4">
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-[#d4a64a]">
@@ -151,9 +160,7 @@ export default async function AdminPage() {
             </div>
           </aside>
 
-          {/* Contenu */}
           <div className="space-y-8">
-            {/* MATCHS ACCUEIL */}
             <SectionCard
               id="matchs-accueil"
               title="⚽ Matchs accueil"
@@ -249,7 +256,6 @@ export default async function AdminPage() {
               </div>
             </SectionCard>
 
-            {/* TICKETS VIP */}
             <SectionCard
               id="tickets-vip"
               title="🎟️ Tickets VIP"
@@ -280,12 +286,7 @@ export default async function AdminPage() {
                   className="input"
                   required
                 />
-                <input
-                  name="cote"
-                  placeholder="1.60"
-                  className="input"
-                  required
-                />
+                <input name="cote" placeholder="1.60" className="input" required />
                 <input
                   name="confiance"
                   placeholder="Élevée"
@@ -383,7 +384,6 @@ export default async function AdminPage() {
               </div>
             </SectionCard>
 
-            {/* RESULTATS */}
             <SectionCard
               id="resultats-pronos"
               title="📊 Résultats pronostics"
@@ -409,12 +409,7 @@ export default async function AdminPage() {
                   className="input"
                   required
                 />
-                <input
-                  name="cote"
-                  placeholder="4.00"
-                  className="input"
-                  required
-                />
+                <input name="cote" placeholder="4.00" className="input" required />
                 <select name="statut" className="input" required>
                   <option value="">Choisir un statut</option>
                   <option value="Gagné">Gagné</option>
@@ -476,11 +471,9 @@ export default async function AdminPage() {
                         <option value="Perdu">Perdu</option>
                       </select>
 
-                      <div className="flex gap-3">
-                        <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
-                          Mettre à jour
-                        </button>
-                      </div>
+                      <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
+                        Mettre à jour
+                      </button>
                     </form>
 
                     <form action={deleteResult} className="mt-3">
@@ -494,15 +487,27 @@ export default async function AdminPage() {
               </div>
             </SectionCard>
 
-            {/* CHALLENGE */}
             <SectionCard
               id="challenge-cdm"
               title="🏆 Challenge Coupe du Monde"
-              subtitle="Ajoute les matchs du challenge, ferme les paris et mets les gagnants pour attribuer les points."
+              subtitle="Ajoute les matchs du challenge, choisis la phase, ferme les paris et mets les gagnants pour attribuer les points."
             >
+              <div className="mb-5 rounded-2xl border border-[#d4a64a]/30 bg-[#d4a64a]/10 p-4 text-sm text-white/80">
+                <p className="font-black text-[#d4a64a]">
+                  Barème automatique du challenge
+                </p>
+                <p className="mt-2">
+                  Groupes : 3 pts · 16es : 5 pts · 8es : 7 pts · Quarts : 10 pts ·
+                  Demies : 12 pts · Finale : 15 pts
+                </p>
+              </div>
+
               <form action={addContestMatch} className="grid gap-3">
                 <input name="date" placeholder="24/06" className="input" required />
                 <input name="time" placeholder="21:00" className="input" required />
+
+                <PhaseSelect />
+
                 <input
                   name="team_a"
                   placeholder="France"
@@ -565,6 +570,9 @@ export default async function AdminPage() {
                         defaultValue={match.time}
                         className="input"
                       />
+
+                      <PhaseSelect defaultValue={match.phase ?? "groupes"} />
+
                       <input
                         name="team_a"
                         defaultValue={match.team_a}

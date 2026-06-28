@@ -18,6 +18,24 @@ async function checkAdmin() {
   return supabase;
 }
 
+function getContestPointsByPhase(phase: string | null) {
+  switch (phase) {
+    case "seiziemes":
+      return 5;
+    case "huitiemes":
+      return 7;
+    case "quarts":
+      return 10;
+    case "demies":
+      return 12;
+    case "finale":
+      return 15;
+    case "groupes":
+    default:
+      return 3;
+  }
+}
+
 export async function addMatch(formData: FormData) {
   const supabase = await checkAdmin();
 
@@ -207,6 +225,7 @@ export async function addContestMatch(formData: FormData) {
     team_b_flag: formData.get("team_b_flag"),
     status: formData.get("status"),
     winner: formData.get("winner") || null,
+    phase: formData.get("phase") || "groupes",
   });
 
   if (error) {
@@ -223,6 +242,8 @@ export async function updateContestMatch(formData: FormData) {
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
   const winner = formData.get("winner") as string;
+  const phase = (formData.get("phase") as string) || "groupes";
+  const pointsToGive = getContestPointsByPhase(phase);
 
   const { error: updateError } = await supabase
     .from("contest_matches")
@@ -235,6 +256,7 @@ export async function updateContestMatch(formData: FormData) {
       team_b_flag: formData.get("team_b_flag"),
       status,
       winner: winner || null,
+      phase,
     })
     .eq("id", id);
 
@@ -254,7 +276,7 @@ export async function updateContestMatch(formData: FormData) {
 
     const { error: pointsError } = await supabase
       .from("contest_predictions")
-      .update({ point: 3 })
+      .update({ point: pointsToGive })
       .eq("match_id", id)
       .eq("prediction", winner);
 
@@ -315,8 +337,6 @@ export async function addContestPrediction(formData: FormData) {
   const [day, month, year] = String(match.date).split("/");
   const [hours, minutes] = String(match.time).split(":");
 
-  // Les heures de tes matchs sont en heure France.
-  // En juin, la France est en UTC+2.
   const matchDateTimeUtc = Date.UTC(
     Number(year),
     Number(month) - 1,
