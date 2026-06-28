@@ -290,7 +290,7 @@ export default async function AdminPage() {
             <SectionCard
               id="challenge-cdm"
               title="🏆 Challenge Coupe du Monde"
-              subtitle="Ajoute les matchs du challenge, choisis la phase, puis termine le match avec le bouton dédié pour attribuer les points."
+              subtitle="Ajoute les matchs, modifie les infos, puis termine le match avec le bouton dédié."
             >
               <div className="mb-5 rounded-2xl border border-[#d4a64a]/30 bg-[#d4a64a]/10 p-4 text-sm text-white/80">
                 <p className="font-black text-[#d4a64a]">
@@ -360,19 +360,26 @@ export default async function AdminPage() {
                         <option value="team_b">Équipe B gagne</option>
                       </select>
 
-                      <div className="flex flex-wrap gap-3">
-                        <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
-                          Modifier
-                        </button>
+                      <button className="rounded-xl bg-[#d4a64a] px-4 py-2 font-black text-black">
+                        Modifier
+                      </button>
+                    </form>
 
-                        <button
-                          type="submit"
-                          formAction={finishContestMatch}
-                          className="rounded-xl bg-green-600 px-4 py-2 font-black text-white hover:bg-green-700"
-                        >
-                          🏁 Terminer le match
-                        </button>
-                      </div>
+                    <form action={finishContestMatch} className="mt-4 grid gap-3 rounded-2xl border border-green-500/30 bg-green-500/10 p-4">
+                      <input type="hidden" name="id" value={match.id} />
+
+                      <PhaseSelect defaultValue={match.phase ?? "groupes"} />
+
+                      <select name="winner" defaultValue={match.winner ?? ""} className="input" required>
+                        <option value="">Choisir le gagnant avant de terminer</option>
+                        <option value="team_a">Équipe A gagne</option>
+                        <option value="draw">Match nul</option>
+                        <option value="team_b">Équipe B gagne</option>
+                      </select>
+
+                      <button className="rounded-xl bg-green-600 px-4 py-3 font-black text-white hover:bg-green-700">
+                        🏁 Terminer le match + attribuer les points
+                      </button>
                     </form>
 
                     <form action={deleteContestMatch} className="mt-3">
